@@ -24,7 +24,7 @@ int[] headPos = {0, 0};
 char direction = 'n';
 byte keyPressCount = 0;
 
-// setup til canvas størrelse og framerate
+// setup til canvas størrelse, framerate og startende setup til spillet
 void setup(){
   size(1800, 900);
   frameRate(fpsGoal);
