@@ -1,28 +1,21 @@
 // Game values
 final int fpsGoal = 60; // bestemmer hvor mange fps spillet viser
 final int gameSpeed = 12; // bestemmer hvor mange opdateringer af slangens bevægelse der er per sekund - her 5
-boolean gameOver = false; // en boolean variabel, som er true, når spillet er ovre
 
-// Dette er ikke en del af koden - eksperimentelt
-/*int[] snakePart = new int[2];
-
-ArrayList<snakePart> snakeLength = new ArrayList<snakePart>();*/
+// Game size - definerer størrelsen af spillebanen
+final byte blockSize = 30;
 
 // Constants - ting, som ikke ændres. final betyder, at variablen ikke kan ændres i programmet.
 // Colors
 final int[] backColor = {255, 255, 255};
 final int[] fillColor = {0, 120, 0};
 
-// Game size - definerer størrelsen af spillebanen
-final byte gridBlockSize = 30;
-final byte boxSize = gridBlockSize - 2;
-
 // Variables
-int[] headGridPos = {0, 0};
 int[] headPos = {0, 0};
 
 char direction = 'n';
 byte keyPressCount = 0;
+boolean gameOver = false; // en boolean variabel, som er true, når slangen er død
 
 // setup til canvas størrelse, framerate og startende setup til spillet
 void setup(){
@@ -37,7 +30,7 @@ void draw(){
   clearScreen(backColor, fillColor);
   
   // Indtegner slangen med dens position
-  rect(headPos[0], headPos[1], boxSize, boxSize);
+  rect(headPos[0], headPos[1], blockSize, blockSize);
   
   // Denne kontrolstruktur opdaterer slangens position, når der er gået 12 frames, og slangen ikke er død
   if(frameCount % gameSpeed == 0 && gameOver == false){
@@ -82,17 +75,9 @@ void keyPressed(){
   }
   // Tjekker om slangen er død og giver muligheden for at trykke p for at genstarte spillet
     if(gameOver == true && key == 'p'){
-    gameReset();
-    
     gameOver = false;
+    gameReset();
   }
-}
-// Game start funktion
-void gameReset(){
-  headGridPos[0] = (width/gridBlockSize)/2;
-  headGridPos[1] = (height/gridBlockSize)/2;
-  headPos[0] = (headGridPos[0] * gridBlockSize) + 1;
-  headPos[1] = (headGridPos[1] * gridBlockSize) + 1;
 }
 
 // Move snake - funktion som bevæger slangen
@@ -101,31 +86,34 @@ void moveUpdate(){
   // Switch, som bevæger slangen, alt efter retning af slangen
   switch(direction){
     case 'w':
-      headGridPos[1] -= 1;
+      headPos[1] -= blockSize;
       break;
     case 's':
-      headGridPos[1] += 1;
+      headPos[1] += blockSize;
       break;
     case 'a':
-      headGridPos[0] -= 1;
+      headPos[0] -= blockSize;
       break;
     case 'd':
-      headGridPos[0] += 1;
+      headPos[0] += blockSize;
       break;
   }
-  headPos[0] = (headGridPos[0] * gridBlockSize) + 1;
-  headPos[1] = (headGridPos[1] * gridBlockSize) + 1;
 }
 
 // Functions
+// Game reset funktion
+void gameReset(){
+  headPos[0] = width/2;
+  headPos[1] = height/2;
+}
 // Optegner spilleområdet. Den bliver kaldt hver gang i starten af en ny frame.
 void clearScreen(int[] backColor, int[] fillColor){
   background(backColor[0], backColor[1], backColor[2]);
   fill(fillColor[0], fillColor[1], fillColor[2]);
-  for(int i = 0; i < width; i += gridBlockSize){
+  for(int i = 0; i < width; i += blockSize){
     line(i, 0, i, height);
   }
-  for(int i = 0; i < height; i += gridBlockSize){
+  for(int i = 0; i < height; i += blockSize){
     line(0, i, width, i);
   }
 }
@@ -133,8 +121,8 @@ void clearScreen(int[] backColor, int[] fillColor){
 // Funktion, som bruges til at debugge og vise værdier i spillet
 void showData(){
   textSize(12);
-  text(str(headGridPos[0]), 12, 12);
-  text(str(headGridPos[1]), 12, 12 * 2);
+  text(str(headPos[0]), 12, 12);
+  text(str(headPos[1]), 12, 12 * 2);
   text("key: " + str(key), 12, 12 * 3);
   text("direction: " + str(direction), 12, 12 * 4);
 }
