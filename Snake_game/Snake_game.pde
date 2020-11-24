@@ -14,7 +14,7 @@ final int[] fillColor = {0, 120, 0};
 int[] headPos = {0, 0};
 
 char direction = 'n';
-byte keyPressCount = 0;
+char oldDirection = 'n';
 boolean gameOver = false; // en boolean variabel, som er true, når slangen er død
 
 // setup til canvas størrelse, framerate og startende setup til spillet
@@ -46,43 +46,38 @@ void draw(){
 
 // Event functions
 void keyPressed(){
-  keyPressCount++; // plusser variabel med 1, når en knap er trykket
-  // If-statement, som tjekker, om der er trykket mere end en knap inden næste opdatering. Dette er til for at sikre, at man ikke kan snyde sin vej rundt om sig selv.
-  if(keyPressCount <= 1){
-    // Switch statement, som sætter direction til samme knap som key, altså det indtastede, hvis knappen ikke er omvendt af direction, f.eks. a og d.
+    // Switch statement, som sætter direction til samme knap som key, altså det indtastede, hvis knappen ikke er omvendt af forrige knap/retning, f.eks. a og d.
     switch(key){
-      case 'w':
-        if(direction != 's'){
-          direction = 'w';
-        }
-        break;
-      case 's':
-        if(direction != 'w'){
-          direction = 's';
-        }
-        break;
-      case 'a':
-        if(direction != 'd'){
-          direction = 'a';
-        }
-        break;
-      case 'd':
-        if(direction != 'a'){
-          direction = 'd';
-        }
-        break;
+    case 'w':
+      if(oldDirection != 's'){
+        direction = 'w';
+      }
+      break;
+    case 's':
+      if(oldDirection != 'w'){
+        direction = 's';
+      }
+      break;
+    case 'a':
+      if(oldDirection != 'd'){
+        direction = 'a';
+      }
+      break;
+    case 'd':
+      if(oldDirection != 'a'){
+        direction = 'd';
+      }
+      break;
     }
-  }
   // Tjekker om slangen er død og giver muligheden for at trykke p for at genstarte spillet
     if(gameOver == true && key == 'p'){
-    gameOver = false;
     gameReset();
   }
 }
 
 // Move snake - funktion som bevæger slangen
 void moveUpdate(){
-  keyPressCount = 0; // tæller hvor mange knapper der er blevet trykket inden opdateringen af slangens bevægelse
+  oldDirection = direction; // gemmer forrige retning, så man ikke kan gå den retning igen, du ved, for ikke at gå ind i sig selv.
   // Switch, som bevæger slangen, alt efter retning af slangen
   switch(direction){
     case 'w':
@@ -103,6 +98,9 @@ void moveUpdate(){
 // Functions
 // Game reset funktion
 void gameReset(){
+  gameOver = false;
+  direction = 'n';
+  oldDirection = 'n';
   headPos[0] = width/2;
   headPos[1] = height/2;
 }
